@@ -31,34 +31,16 @@ impl JsonWebKey {
 
     pub fn verify(&self, body: &[u8], signature: &[u8]) -> Result<(), Error> {
         match self.algorithm {
-            Algorithm::RS256 => {
-                #[cfg(feature = "native-ssl")]
-                {
-                    use openssl::{
-                        bn::BigNum, hash::MessageDigest, pkey::PKey, rsa::Rsa, sign::Verifier,
-                    };
-                    let n = BigNum::from_slice(&base64_decode(&self.n)?)?;
-                    let e = BigNum::from_slice(&base64_decode(&self.e)?)?;
-                    let key = PKey::from_rsa(Rsa::from_public_components(n, e)?)?;
-                    let mut verifier = Verifier::new(MessageDigest::sha256(), &key)?;
-                    verifier.update(body)?;
-                    verifier.verify(signature)?;
-                }
-                #[cfg(feature = "rust-ssl")]
-                {
-                    ring::rsa::PublicKeyComponents {
-                        n: base64_decode(&self.n)?,
-                        e: base64_decode(&self.e)?,
-                    }
-                    .verify(
-                        &ring::signature::RSA_PKCS1_2048_8192_SHA256,
-                        body,
-                        signature,
-                    )
-                    .map_err(Error::from)?
-                }
-                Ok(())
+            Algorithm::RS256 => ring::rsa::PublicKeyComponents {
+                n: base64_decode(&self.n)?,
+                e: base64_decode(&self.e)?,
             }
+            .verify(
+                &ring::signature::RSA_PKCS1_2048_8192_SHA256,
+                body,
+                signature,
+            )
+            .map_err(Error::from),
             _ => Err(Error::UnsupportedAlgorithm(self.algorithm)),
         }
     }
