@@ -43,7 +43,7 @@ impl GoogleKeyProvider {
             .and_then(CacheControl::from_value)
             .and_then(|c| c.max_age)
         {
-            self.cached = Some(serde_json::from_str(&text).map_err(|_| ())?);
+            self.cached = Some(serde_json::from_str(text).map_err(|_| ())?);
             self.expiration_time = Instant::now() + max_age;
         }
         Ok(self.cached.as_ref().unwrap())
@@ -52,8 +52,7 @@ impl GoogleKeyProvider {
     pub fn download_keys(&mut self) -> Result<&JsonWebKeySet, ()> {
         let result = http_client::get_blocking(GOOGLE_CERT_URL)
             .into_iter()
-            .filter(|r| r.status().is_success())
-            .next()
+            .find(|r| r.status().is_success())
             .ok_or(())?;
         self.process_response(result.headers(), result.body())
     }
@@ -62,8 +61,7 @@ impl GoogleKeyProvider {
         let result = http_client::get_async(GOOGLE_CERT_URL)
             .await
             .into_iter()
-            .filter(|r| r.status().is_success())
-            .next()
+            .find(|r| r.status().is_success())
             .ok_or(())?;
         self.process_response(result.headers(), result.body())
     }

@@ -20,5 +20,5 @@ pub use error::Error;
 
 fn base64_decode(input: &str) -> Result<Vec<u8>, base64::DecodeError> {
     use base64::{engine::general_purpose::URL_SAFE_NO_PAD, Engine as _};
-    URL_SAFE_NO_PAD.decode(&input)
+    URL_SAFE_NO_PAD.decode(input)
 }

@@ -40,10 +40,10 @@ where
             .next()
             .ok_or(Error::InvalidToken(TokenFormat("signature".to_string())))?;
 
-        let header: Header = serde_json::from_slice(&base64_decode(&encoded_header)?)?;
+        let header: Header = serde_json::from_slice(&base64_decode(encoded_header)?)?;
         let signed_body = format!("{}.{}", encoded_header, encoded_payload);
-        let signature = base64_decode(&encoded_signature)?;
-        let payload = base64_decode(&encoded_payload)?;
+        let signature = base64_decode(encoded_signature)?;
+        let payload = base64_decode(encoded_payload)?;
         let claims: RequiredClaims = serde_json::from_slice(&payload)?;
         if claims.get_audience() != client_id {
             return Err(Error::InvalidToken(InvalidClaims("aud".to_string())));

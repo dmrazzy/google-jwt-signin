@@ -1,13 +1,17 @@
 [package]
-name = "google-jwt-verify"
-version = "0.3.0"
-authors = ["Nathan Fox <fuchsnj@gmail.com>"]
+name = "google-jwt-signin"
+version = "0.4.1"
+authors = [
+  "Nathan Fox <fuchsnj@gmail.com>",
+  "Charles Johnson <charlesthomasjohnson0@gmail.com>",
+  "Daniel James Baumann <dan.james.baumann@gmail.com>",
+]
 readme = "README.md"
-repository = "https://github.com/fuchsnj/google-jwt-verify"
+repository = "https://github.com/guapodero/google-jwt-signin"
 license = "MIT/Apache-2.0"
-description = """
-A client to verify Google JSON web tokens
-"""
+description = "Verify ID tokens for Google SSO"
+categories = ["authentication", "web-programming", "asynchronous"]
+keywords = ["oauth", "jwt", "rustls", "async"]
 edition = "2021"
 
 [features]
