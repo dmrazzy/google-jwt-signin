@@ -1,7 +1,6 @@
-use std::{
-    sync::Arc,
-    time::{SystemTime, UNIX_EPOCH},
-};
+#[cfg(feature = "async")]
+use std::sync::Arc;
+use std::time::{SystemTime, UNIX_EPOCH};
 
 use serde::Deserialize;
 
@@ -78,10 +77,10 @@ impl<P> UnverifiedToken<P> {
     #[cfg(feature = "blocking")]
     pub fn verify<KP: KeyProvider>(
         self,
-        key_provider: &Arc<std::sync::Mutex<KP>>,
+        key_provider: &std::cell::RefCell<KP>,
     ) -> Result<Token<P>, Error> {
         let key_id = self.header.key_id.clone();
-        self.verify_with_key(key_provider.lock().unwrap().get_key(&key_id))
+        self.verify_with_key(key_provider.borrow_mut().get_key(&key_id))
     }
     #[cfg(feature = "async")]
     pub async fn verify_async<KP: AsyncKeyProvider>(

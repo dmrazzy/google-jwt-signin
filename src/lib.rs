@@ -11,6 +11,7 @@ mod key_provider;
 mod token;
 mod unverified_token;
 
+#[cfg(feature = "blocking")]
 pub use crate::client::Client;
 #[cfg(feature = "async")]
 pub use crate::client::TokioClient;
