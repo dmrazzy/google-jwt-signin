@@ -12,25 +12,29 @@ edition = "2021"
 
 [features]
 default = ["blocking"]
-async = ["async-trait", "tokio"]
-blocking = ["reqwest/blocking"]
+blocking = ["ureq"]
+async = ["async-trait", "tokio", "hyper-rustls", "hyper-util", "http-body-util", "bytes"]
 
 [dependencies]
-async-trait = {version = "~0.1", optional = true}
+log = "~0.4"
+env_logger = "~0.11"
 base64 = "~0.22"
 serde = "~1.0"
 serde_json = "~1.0"
 serde_derive = "~1.0"
-http = "0.2" # reqwest 0.11.26 uses this version
-cache_control = "~0.2"
-tokio = {version = "1", optional = true}
 ring = "=0.17.8"
+http = "~1.1"
+cache_control = "~0.2"
 
-[dependencies.reqwest]
-version = "0.11.26"
-features = ["rustls-tls-native-roots"]
-default-features = false
+ureq = { version = "~2.9", features = ["native-certs"], optional = true }
+
+async-trait = {version = "~0.1", optional = true}
+tokio = { version = "1", optional = true }
+hyper-rustls = { version = "~0.26", optional = true }
+hyper-util = { version = "~0.1", features = ["client", "client-legacy", "tokio"], optional = true }
+http-body-util = { version = "~0.1", optional = true }
+bytes = { version = "~1.6", optional = true }
 
 [dev-dependencies]
-tokio = {version = "1", features = ["macros"]}
+tokio = { version = "1", features = ["macros"] }
 futures = "0.3"

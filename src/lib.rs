@@ -5,6 +5,7 @@ mod algorithm;
 mod client;
 mod error;
 mod header;
+mod http_client;
 mod jwk;
 mod key_provider;
 mod token;

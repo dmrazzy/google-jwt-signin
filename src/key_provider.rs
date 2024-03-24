@@ -1,10 +1,12 @@
-use crate::jwk::JsonWebKey;
-use crate::jwk::JsonWebKeySet;
+use std::time::Instant;
+
 #[cfg(feature = "async")]
 use async_trait::async_trait;
 use cache_control::CacheControl;
 use http::{header::CACHE_CONTROL, HeaderMap};
-use std::time::Instant;
+
+use crate::http_client;
+use crate::jwk::{JsonWebKey, JsonWebKeySet};
 
 const GOOGLE_CERT_URL: &str = "https://www.googleapis.com/oauth2/v3/certs";
 
@@ -48,16 +50,22 @@ impl GoogleKeyProvider {
     }
     #[cfg(feature = "blocking")]
     pub fn download_keys(&mut self) -> Result<&JsonWebKeySet, ()> {
-        let result = reqwest::blocking::get(GOOGLE_CERT_URL).map_err(|_| ())?;
-        self.process_response(&result.headers().clone(), &result.text().map_err(|_| ())?)
+        let result = http_client::get_blocking(GOOGLE_CERT_URL)
+            .into_iter()
+            .filter(|r| r.status().is_success())
+            .next()
+            .ok_or(())?;
+        self.process_response(result.headers(), result.body())
     }
     #[cfg(feature = "async")]
     async fn download_keys_async(&mut self) -> Result<&JsonWebKeySet, ()> {
-        let result = reqwest::get(GOOGLE_CERT_URL).await.map_err(|_| ())?;
-        self.process_response(
-            &result.headers().clone(),
-            &result.text().await.map_err(|_| ())?,
-        )
+        let result = http_client::get_async(GOOGLE_CERT_URL)
+            .await
+            .into_iter()
+            .filter(|r| r.status().is_success())
+            .next()
+            .ok_or(())?;
+        self.process_response(result.headers(), result.body())
     }
 }
 
