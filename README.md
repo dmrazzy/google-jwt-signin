@@ -2,7 +2,7 @@
 [![crates.io](https://img.shields.io/crates/v/google-jwt-signin.svg)](https://crates.io/crates/google-jwt-signin)
 [![documentation](https://docs.rs/google-jwt-signin/badge.svg)](https://docs.rs/google-jwt-signin)
 
-A simple way to authorize users. A fork of https://crates.io/crates/google-jwt-verify focused on minimal code size.
+A simple way to authenticate users. A fork of https://crates.io/crates/google-jwt-verify focused on minimal code size.
 
 Given a [client ID](https://developers.google.com/identity/protocols/oauth2#1.-obtain-oauth-2.0-credentials-from-the-dynamic_data.setvar.console_name-.)
 and a [JSON web token](https://jwt.io/introduction/)
@@ -34,3 +34,9 @@ Read about the ring security audit [here](https://jbp.io/2020/06/14/rustls-audit
  let email = id_token.get_payload().get_email();
  let name = id_token.get_payload().get_name();
 ```
+
+## Issues
+Beware that Google's Oauth implementation is not well documented. The list of test users in the
+[Oauth consent screen](https://developers.google.com/workspace/guides/configure-oauth-consent#configure_oauth_consent)
+does not constitute an authorization whitelist (other users will also be granted access).
+See this [issuetracker](https://issuetracker.google.com/issues/211370835?pli=1) for further details.
