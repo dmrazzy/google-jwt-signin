@@ -111,9 +111,9 @@ pub fn test_id_token() {
     let id_token = client
         .verify_id_token(TOKEN)
         .expect("id token should be valid");
-    assert_eq!(id_token.get_claims().get_audience(), AUDIENCE);
-    assert_eq!(id_token.get_payload().get_domain(), None);
-    assert_eq!(id_token.get_payload().get_email(), EMAIL);
+    assert_eq!(id_token.claims.audience, AUDIENCE);
+    assert_eq!(id_token.payload.domain, None);
+    assert_eq!(id_token.payload.email, Some(EMAIL.to_string()));
 }
 
 #[cfg(feature = "async")]
@@ -162,9 +162,9 @@ async fn test_id_token_async() {
         .verify_id_token_async(TOKEN)
         .await
         .expect("id token should be valid");
-    assert_eq!(id_token.get_claims().get_audience(), AUDIENCE);
-    assert_eq!(id_token.get_payload().get_domain(), None);
-    assert_eq!(id_token.get_payload().get_email(), EMAIL);
+    assert_eq!(id_token.claims.audience, AUDIENCE);
+    assert_eq!(id_token.payload.domain, None);
+    assert_eq!(id_token.payload.email, Some(EMAIL.to_string()));
 }
 
 #[cfg(feature = "async")]

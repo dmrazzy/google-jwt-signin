@@ -23,20 +23,31 @@ Read about the ring security audit [here](https://jbp.io/2020/06/14/rustls-audit
 
 ## Quick Start
 ```rust
- //If you don't have a client id, get one from here: https://console.developers.google.com/
- let client_id = "37772117408-qjqo9hca513pdcunumt7gk08ii6te8is.apps.googleusercontent.com";
- let token = "...";// Obtain a signed token from Google
- let client = Client::new(&client_id);
- let id_token = client.verify_id_token(&token)?;
- 
- //use the token to obtain information about the verified user
- let user_id = id_token.get_claims().get_subject();
- let email = id_token.get_payload().get_email();
- let name = id_token.get_payload().get_name();
+//If you don't have a client id, get one from here: https://console.developers.google.com/
+let client_id = "37772117408-qjqo9hca513pdcunumt7gk08ii6te8is.apps.googleusercontent.com";
+let token = "...";// Obtain a signed token from Google
+let client = Client::new(&client_id);
+let id_token = client.verify_id_token(&token)?;
+let greeting = authorize_token(&id_token);
+
+// use authenticated token to authorize
+fn authorize_token(token: &Token<IdPayload>) -> Option<String> {
+    match token {
+        Token {
+            payload: payload @ IdPayload {
+                email: Some(email), ..
+            },
+            ..
+        } if TEST_USERS.contains(&email.as_str()) => {
+            Some(format!("hello {}", payload.name.as_ref().unwrap_or(email)))
+        }
+        _ => None,
+    }
+}
 ```
 
 ## Issues
-Beware that Google's Oauth implementation is not well documented. The list of test users in the
+Be aware that Google's Oauth implementation is not well documented. The list of test users in the
 [Oauth consent screen](https://developers.google.com/workspace/guides/configure-oauth-consent#configure_oauth_consent)
 does not constitute an authorization whitelist (other users will also be granted access).
 See this [issuetracker](https://issuetracker.google.com/issues/211370835?pli=1) for further details.
