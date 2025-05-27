@@ -11,26 +11,26 @@ fn io_error<E: std::fmt::Debug>(msg: &str, cause: E) -> Error {
 
 #[cfg(feature = "blocking")]
 pub fn get_blocking(url: &str) -> Result<Response<String>, Error> {
-    use http::status::StatusCode;
-    match ureq::get(url).call() {
-        Ok(response) | Err(ureq::Error::Status(_, response)) => {
-            let status = StatusCode::from_u16(response.status()).unwrap();
-            let mut builder = Response::builder().status(status);
-            for hdr in response.headers_names().iter() {
-                builder = builder.header(hdr, response.header(hdr).unwrap());
-            }
-            let response_str = response.into_string()?;
-            let resp = builder
-                .body(response_str)
-                .map_err(|e| io_error("failed to convert response", e))?;
-            if status.is_success() {
+    match ureq::get(url)
+        .config()
+        .http_status_as_error(false)
+        .build()
+        .call()
+    {
+        Ok(response) => {
+            let (parts, mut body) = response.into_parts();
+            if parts.status.is_success() {
                 log::trace!("successful GET {url}");
             } else {
-                log::warn!("failed GET {url} ({:?})", status.canonical_reason())
+                log::warn!("failed GET {url} ({:?})", parts.status.canonical_reason())
             }
+            let response_str = body
+                .read_to_string()
+                .map_err(|e| io_error("failed to convert response", e))?;
+            let resp = Response::from_parts(parts, response_str);
             Ok(resp)
         }
-        Err(e @ ureq::Error::Transport(..)) => Err(io_error("transport error", e)),
+        Err(e) => Err(io_error("failed http request", e)),
     }
 }
 
@@ -41,6 +41,7 @@ pub fn get_async(url: &str) -> impl Future<Output = Result<Response<String>, Err
     use hyper_util::client::legacy::Client;
     use hyper_util::rt::TokioExecutor;
 
+    let _ = rustls::crypto::ring::default_provider().install_default();
     let url = url.parse::<http::Uri>().unwrap();
     let https = hyper_rustls::HttpsConnectorBuilder::new()
         .with_native_roots()
