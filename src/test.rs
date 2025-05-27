@@ -13,9 +13,6 @@ use crate::key_provider::KeyProvider;
 #[cfg(feature = "async")]
 use futures::future::join_all;
 
-#[cfg(feature = "async")]
-use async_trait::async_trait;
-
 const TOKEN: &'static str = "eyJhbGciOiJSUzI1NiIsImtpZCI6IjA5YmNmODAyOGUwNjUzN2Q0ZDNhZTRkODRmNWM1YmFiY2YyYzBmMGEiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiIzNDk4Nzk2NDE2OTEtOXZnN2JnYnVuNjJkNGE2MnZwc2ZzMjRvZ3VndWFuazYuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiIzNDk4Nzk2NDE2OTEtOXZnN2JnYnVuNjJkNGE2MnZwc2ZzMjRvZ3VndWFuazYuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMDU5MDc5MDAwMDgxNzA4NzE1ODYiLCJlbWFpbCI6ImRhbi5qYW1lcy5iYXVtYW5uQGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJuYmYiOjE3MTA5NDcwOTUsIm5hbWUiOiJEYW4gQmF1bWFubiIsInBpY3R1cmUiOiJodHRwczovL2xoMy5nb29nbGV1c2VyY29udGVudC5jb20vYS9BQ2c4b2NKLXBGVHZTQkg1QlZISUxWZUVyQ0lpN1BYLUV6Q3NydzlMM05SX0xfRnA9czk2LWMiLCJnaXZlbl9uYW1lIjoiRGFuIiwiZmFtaWx5X25hbWUiOiJCYXVtYW5uIiwiaWF0IjoxNzEwOTQ3Mzk1LCJleHAiOjE3MTA5NTA5OTUsImp0aSI6ImRlNjg1MTk5ZTIxZDE5YjNlY2MyMTFlMDZjNGQ4NzRiNWFlMDhiMWUifQ.YdFwUBPlZExRZBlhZgaO9szNlm1Ffe3TNt8MauK7p30qikFo_EN6eKneVWS_TnpO1XtJoeeDsRDvewUoF0eQrN_G-eeVHl7Gsg5i6vgMYqNxObpwHh4oQaUNnUhTykNSjLuShB3FuBbq0NF6W6kC2UHwYqWmK360HpQjKF244zH2H0maLP5m1JIXdDSZb5KFSrXxGIIJpq2TCpz0JxdnPh9R4CzM_GgWnzwELO_nw3yyWYwQ1PCTyHg-RG6Xs-a8ZCPtLkgdeapqbapTnpBRqkIzbC97yw6WK7So1mQ3fNBTwLCygqfHcgJa_Snlgdl43pcVpbrFKFh8NTP7iW_N-Q";
 const JWKS: &'static str = r#"{
   "keys": [
@@ -60,7 +57,6 @@ impl KeyProvider for TestKeyProvider {
 }
 
 #[cfg(feature = "async")]
-#[async_trait]
 impl AsyncKeyProvider for TestKeyProvider {
     async fn get_key_async(&mut self, key_id: &str) -> Result<Option<JsonWebKey>, ()> {
         let set: JsonWebKeySet = serde_json::from_str(JWKS).unwrap();

@@ -1,6 +1,6 @@
 [package]
 name = "google-jwt-signin"
-version = "0.5.1"
+version = "0.5.2"
 authors = [
   "Nathan Fox <fuchsnj@gmail.com>",
   "Charles Johnson <charlesthomasjohnson0@gmail.com>",
@@ -17,7 +17,7 @@ edition = "2024"
 [features]
 default = ["blocking"]
 blocking = ["ureq"]
-async = ["async-trait", "tokio", "hyper-rustls", "hyper-util", "http-body-util", "bytes"]
+async = ["tokio", "hyper-rustls", "hyper-util", "http-body-util", "bytes"]
 
 [dependencies]
 log = "0.4"
@@ -32,7 +32,6 @@ cache_control = "0.2"
 
 ureq = { version = "3.0", optional = true }
 
-async-trait = {version = "0.1", optional = true}
 tokio = { version = "1", optional = true }
 hyper-util = { version = "0.1", features = ["client", "client-legacy", "tokio"], optional = true }
 http-body-util = { version = "0.1", optional = true }

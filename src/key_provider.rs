@@ -1,7 +1,5 @@
 use std::time::Instant;
 
-#[cfg(feature = "async")]
-use async_trait::async_trait;
 use cache_control::CacheControl;
 use http::{header::CACHE_CONTROL, HeaderMap};
 
@@ -16,7 +14,7 @@ pub trait KeyProvider {
 }
 
 #[cfg(feature = "async")]
-#[async_trait]
+#[allow(async_fn_in_trait)]
 pub trait AsyncKeyProvider {
     async fn get_key_async(&mut self, key_id: &str) -> Result<Option<JsonWebKey>, ()>;
 }
@@ -80,7 +78,6 @@ impl KeyProvider for GoogleKeyProvider {
 }
 
 #[cfg(feature = "async")]
-#[async_trait]
 impl AsyncKeyProvider for GoogleKeyProvider {
     async fn get_key_async(&mut self, key_id: &str) -> Result<Option<JsonWebKey>, ()> {
         if let Some(ref cached_keys) = self.cached {
