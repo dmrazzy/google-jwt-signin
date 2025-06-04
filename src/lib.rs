@@ -19,6 +19,6 @@ pub use crate::token::{IdPayload, RequiredClaims, Token};
 pub use error::Error;
 
 fn base64_decode(input: &str) -> Result<Vec<u8>, base64::DecodeError> {
-    use base64::{engine::general_purpose::URL_SAFE_NO_PAD, Engine as _};
+    use base64::{Engine as _, engine::general_purpose::URL_SAFE_NO_PAD};
     URL_SAFE_NO_PAD.decode(input)
 }

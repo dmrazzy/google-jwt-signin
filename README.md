@@ -51,3 +51,9 @@ Be aware that Google's Oauth implementation is not well documented. The list of 
 [Oauth consent screen](https://developers.google.com/workspace/guides/configure-oauth-consent#configure_oauth_consent)
 does not constitute an authorization whitelist (other users will also be granted access).
 See this [issuetracker](https://issuetracker.google.com/issues/211370835?pli=1) for further details.
+
+## Development
+New issues are welcome for discussion. If it's a feature request, best to agree on whether it belongs here
+before starting to work on a PR.
+
+When running the tests, be sure to include the async feature: `cargo test --features=async`.
