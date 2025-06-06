@@ -1,20 +1,32 @@
+use thiserror::Error;
+
 use crate::algorithm::Algorithm;
 
-#[derive(Debug, PartialEq)]
+#[derive(Error, Debug, PartialEq)]
 pub enum InvalidError {
-    Base64(base64::DecodeError),
+    #[error("unable to decode base64 data in token")]
+    Base64(#[from] base64::DecodeError),
+    #[error("invalid json in token")]
     Json(String),
+    #[error("opaque crypto error")]
     Crypto,
+    #[error("improperly formatted token")]
     TokenFormat(String),
+    #[error("invalid token claims")]
     InvalidClaims(String),
+    #[error("invalid JWT key id")]
     InvalidKeyId,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Error, Debug, PartialEq)]
 pub enum Error {
-    InvalidToken(InvalidError),
+    #[error("invalid JWT token")]
+    InvalidToken(#[from] InvalidError),
+    #[error("unable to fetch token signing keys")]
     RetrieveKeyFailure,
+    #[error("verification algorithm is {0:?} (not RS256)")]
     UnsupportedAlgorithm(Algorithm),
+    #[error("token expired")]
     Expired,
 }
 

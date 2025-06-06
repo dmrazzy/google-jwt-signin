@@ -1,7 +1,7 @@
 use std::time::Instant;
 
 use cache_control::CacheControl;
-use http::{header::CACHE_CONTROL, HeaderMap};
+use http::{HeaderMap, header::CACHE_CONTROL};
 
 use crate::http_client;
 use crate::jwk::{JsonWebKey, JsonWebKeySet};

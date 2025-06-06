@@ -9,7 +9,7 @@ use crate::error::InvalidError::{InvalidClaims, InvalidKeyId, TokenFormat};
 use crate::key_provider::AsyncKeyProvider;
 #[cfg(feature = "blocking")]
 use crate::key_provider::KeyProvider;
-use crate::{base64_decode, header::Header, jwk::JsonWebKey, Error, RequiredClaims, Token};
+use crate::{Error, RequiredClaims, Token, base64_decode, header::Header, jwk::JsonWebKey};
 
 #[derive(Debug)]
 pub struct UnverifiedToken<P> {
