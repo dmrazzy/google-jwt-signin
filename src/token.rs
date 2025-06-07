@@ -21,17 +21,8 @@ pub struct RequiredClaims {
     #[serde(rename = "exp")]
     pub expires_at: u64,
 
-    #[serde(rename = "nbf")]
-    pub not_before: u64,
-
     #[serde(rename = "iat")]
     pub issued_at: u64,
-
-    #[serde(rename = "jti")]
-    pub jwt_id: String,
-
-    #[serde(rename = "azp")]
-    pub android_audience: String,
 }
 
 // https://developers.google.com/identity/gsi/web/reference/html-reference#credential
