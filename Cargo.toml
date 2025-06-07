@@ -1,6 +1,6 @@
 [package]
 name = "google-jwt-signin"
-version = "0.5.3"
+version = "0.5.4"
 authors = [
   "Nathan Fox <fuchsnj@gmail.com>",
   "Charles Johnson <charlesthomasjohnson0@gmail.com>",
